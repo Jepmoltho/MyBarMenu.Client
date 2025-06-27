@@ -8,19 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddHttpClient<IAccountService, AccountService>();
+var baseUri = "https://my-bar-menu-api-gpeme8e7dvccbtcx.northeurope-01.azurewebsites.net/";
 
-//builder.Services.AddScoped(sp =>
-//{
-//    var baseUri = "https://my-bar-menu-api-gpeme8e7dvccbtcx.northeurope-01.azurewebsites.net/";
-//    return new HttpClient
-//    {
-//        BaseAddress = new Uri(baseUri),
-//        DefaultRequestHeaders = { { "Accept", "application/json" } }
-//    };
-//});
-
-//builder.Services.AddScoped<IAccountService, AccountService>();
+// Registers AccountService as a scoped service. Each time it's injected, a new instance is created with its own HttpClient. The HttpClient is managed by IHttpClientFactory and scoped to the AccountService instance.
+builder.Services.AddHttpClient<IAccountService, AccountService>(client =>
+{
+    client.BaseAddress = new Uri(baseUri);
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
 
 var app = builder.Build();
 

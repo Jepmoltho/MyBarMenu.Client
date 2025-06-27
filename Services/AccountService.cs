@@ -14,7 +14,7 @@ public class AccountService : IAccountService
 
     public async Task<IEnumerable<UserDTO>> GetUsers()
     {
-        var response = await _httpClient.GetAsync("https://my-bar-menu-api-gpeme8e7dvccbtcx.northeurope-01.azurewebsites.net/users");
+        var response = await _httpClient.GetAsync("users");
 
         if (response.IsSuccessStatusCode)
         {

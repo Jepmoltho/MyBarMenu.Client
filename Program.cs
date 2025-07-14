@@ -8,7 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-var baseUri = "https://my-bar-menu-api-gpeme8e7dvccbtcx.northeurope-01.azurewebsites.net/";
+//var baseUri = "https://my-bar-menu-api-gpeme8e7dvccbtcx.northeurope-01.azurewebsites.net/";
+var baseUri = "https://localhost:7201/";
 
 // Registers AccountService as a scoped service. Each time it's injected, a new instance is created with its own HttpClient. The HttpClient is managed by IHttpClientFactory and scoped to the AccountService instance.
 builder.Services.AddHttpClient<IAccountService, AccountService>(client =>

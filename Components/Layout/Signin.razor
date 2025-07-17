@@ -3,6 +3,12 @@
     <a href=@($"{backendUrl}auth/SignInWithGoogle")>
         Sign in with Google
     </a>
+    <br />
+    <br />
+    <br />
+    <form method="post" action="@($"{backendUrl}auth/SignOut")">
+        <button type="submit">Sign out</button>
+    </form>
 </div>
 
 @code {

@@ -14,6 +14,19 @@ public class AccountService : IAccountService
 
     public async Task<IEnumerable<UserDTO>> GetUsers()
     {
+        var request = new HttpRequestMessage(HttpMethod.Get, "users");
+
+        // (optional) Inspect and modify headers
+        // For example, check if a cookie header exists
+        //var cookies = request.Headers.TryGetValues("Cookie", out var cookieValues)
+        //    ? string.Join("; ", cookieValues)
+        //    : "No Cookie header set";
+
+        //var cookie = _httpContextAccessor.HttpContext?.Request.Cookies[".AspNetCore.Identity.Application"];
+
+        //var request = new HttpRequestMessage(HttpMethod.Get, "users");
+        //request.Headers.Add("Cookie", $".AspNetCore.Identity.Application={cookie}");
+
         var response = await _httpClient.GetAsync("users");
 
         if (response.IsSuccessStatusCode)

@@ -1,9 +1,18 @@
 ﻿@page "/app"
 @using Microsoft.AspNetCore.Authorization
-@attribute [Authorize]
+@using Microsoft.AspNetCore.Components.Authorization
+<!-- attribute [Authorize] -->
 
 <!-- This site can only be seen if logged in -->
-<h3>AppHome</h3>
+<AuthorizeView>
+    <Authorized>
+        <h3>AppHome</h3>
+    </Authorized>
+    <NotAuthorized>
+        <h3>No app home</h3>
+        @* <RedirectToLogin /> *@
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
 

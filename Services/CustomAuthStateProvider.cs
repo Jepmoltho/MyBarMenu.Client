@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using MyBarMenu.Client.DTOs;
 using System.Security.Claims;
+using DotNetEnv;
+using System;
 
 namespace MyBarMenu.Client.Services;
 
@@ -10,11 +12,16 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
 
     public CustomAuthStateProvider(HttpClient httpClient)
     {
+        var backendUrl = "https://localhost:7201"; // Environment.GetEnvironmentVariable("BACKEND_URL") ?? throw new InvalidOperationException("Backend url not set");
+
         _httpClient = httpClient;
+        _httpClient.BaseAddress = new Uri(backendUrl);
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
+        
+        
         var user = await _httpClient.GetFromJsonAsync<UserInfo>("user/auth");
 
         try

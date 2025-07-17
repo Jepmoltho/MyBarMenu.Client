@@ -14,7 +14,7 @@ public class AccountService : IAccountService
 
     public async Task<IEnumerable<UserDTO>> GetUsers()
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, "users");
+        //var request = new HttpRequestMessage(HttpMethod.Get, "users");
 
         // (optional) Inspect and modify headers
         // For example, check if a cookie header exists

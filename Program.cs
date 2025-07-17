@@ -21,19 +21,15 @@ builder.Services.AddHttpClient<IAccountService, AccountService>(client =>
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
-//builder.Services.AddHttpClient<CustomAuthStateProvider>(client =>
-//{
-//    client.BaseAddress = new Uri(baseUrl);
-//});
-//builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+
 
 builder.Services.AddAuthorizationCore();
-builder.Services.AddAuthentication("Cookies").AddCookie("Cookies", options => 
-{
-    options.LoginPath = "/app";
-    options.LogoutPath = "/";
-    options.AccessDeniedPath = "/login";
-});
+//builder.Services.AddAuthentication("Cookies").AddCookie("Cookies", options => 
+//{
+//    options.LoginPath = "/app";
+//    options.LogoutPath = "/";
+//    options.AccessDeniedPath = "/login";
+//});
 builder.Services.AddAuthorization();
                    
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();

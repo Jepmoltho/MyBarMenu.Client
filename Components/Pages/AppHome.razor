@@ -4,15 +4,17 @@
 <!-- attribute [Authorize] -->
 
 <!-- This site can only be seen if logged in -->
-<AuthorizeView>
-    <Authorized>
-        <h3>AppHome</h3>
-    </Authorized>
-    <NotAuthorized>
-        <h3>No app home</h3>
-        @* <RedirectToLogin /> *@
-    </NotAuthorized>
-</AuthorizeView>
+<CascadingAuthenticationState>
+    <AuthorizeView>
+        <Authorized>
+            <h3>AppHome</h3>
+        </Authorized>
+        <NotAuthorized>
+            <h3>No app home</h3>
+            @* <RedirectToLogin /> *@
+        </NotAuthorized>
+    </AuthorizeView>
+</CascadingAuthenticationState>
 
 @code {
 

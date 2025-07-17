@@ -1,6 +1,7 @@
 using MyBarMenu.Client.Components;
 using MyBarMenu.Client.Services;
 using MyBarMenu.Client.Services.Interfaces;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,12 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-var baseUri = "https://my-bar-menu-api-gpeme8e7dvccbtcx.northeurope-01.azurewebsites.net/";
+Env.Load();
+var baseUrl = Environment.GetEnvironmentVariable("BACKEND_URL") ?? throw new InvalidOperationException("Backend url not set");
 
 // Registers AccountService as a scoped service. Each time it's injected, a new instance is created with its own HttpClient. The HttpClient is managed by IHttpClientFactory and scoped to the AccountService instance.
 builder.Services.AddHttpClient<IAccountService, AccountService>(client =>
 {
-    client.BaseAddress = new Uri(baseUri);
+    client.BaseAddress = new Uri(baseUrl);
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 

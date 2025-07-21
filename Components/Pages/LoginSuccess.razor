@@ -1,3 +1,32 @@
 ﻿@page "/login-success"
+@inject NavigationManager Navigation
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@rendermode InteractiveServer
+
 
 <h3>Logged in successfully 🎉</h3>
+
+@code {
+    private bool _hasRun;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_hasRun)
+        {
+            _hasRun = true;
+
+            var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
+            if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var token))
+            {
+                await LocalStorage.SetItemAsync("authToken", token.ToString());
+
+                // Redirect after saving token
+                //Navigation.NavigateTo("/app");
+            }
+            else
+            {
+                //Navigation.NavigateTo("/login");
+            }
+        }
+    }
+}

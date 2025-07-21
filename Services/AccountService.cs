@@ -1,21 +1,34 @@
 ﻿using MyBarMenu.Client.DTOs;
 using MyBarMenu.Client.Services.Interfaces;
+using Blazored.LocalStorage;
 
 namespace MyBarMenu.Client.Services;
 
 public class AccountService : IAccountService
 {
     private readonly HttpClient _httpClient;
+    private readonly ILocalStorageService _localStorageService;
 
-    public AccountService(HttpClient httpClient)
+    public AccountService(HttpClient httpClient, ILocalStorageService localStorageService)
     {
         _httpClient = httpClient;
+        _localStorageService = localStorageService;
     }
 
-    public async Task<IEnumerable<UserDTO>> GetUsers()
+    public async Task<IEnumerable<UserDTO>> GetUsers(string token)
     {
+        //var token = await _localStorageService.GetItemAsync<string>("authToken");
 
-        var response = await _httpClient.GetAsync("users");
+        if (string.IsNullOrEmpty(token))
+        {
+            return new List<UserDTO>();
+        }
+
+        var request = new HttpRequestMessage(HttpMethod.Get, "users");
+        request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        var response = await _httpClient.SendAsync(request);
+
+        //var response = await _httpClient.GetAsync("users");
 
         if (response.IsSuccessStatusCode)
         {
@@ -24,14 +37,14 @@ public class AccountService : IAccountService
             return users ?? new List<UserDTO>();
         }
 
-        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-        {
-            return new List<UserDTO>();
-        }
-
         if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
         {
             return new List<UserDTO>(); //ENDS IN HERE.
+        }
+
+        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            return new List<UserDTO>();
         }
 
         return new List<UserDTO>();

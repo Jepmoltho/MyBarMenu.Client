@@ -14,18 +14,6 @@ public class AccountService : IAccountService
 
     public async Task<IEnumerable<UserDTO>> GetUsers()
     {
-        //var request = new HttpRequestMessage(HttpMethod.Get, "users");
-
-        // (optional) Inspect and modify headers
-        // For example, check if a cookie header exists
-        //var cookies = request.Headers.TryGetValues("Cookie", out var cookieValues)
-        //    ? string.Join("; ", cookieValues)
-        //    : "No Cookie header set";
-
-        //var cookie = _httpContextAccessor.HttpContext?.Request.Cookies[".AspNetCore.Identity.Application"];
-
-        //var request = new HttpRequestMessage(HttpMethod.Get, "users");
-        //request.Headers.Add("Cookie", $".AspNetCore.Identity.Application={cookie}");
 
         var response = await _httpClient.GetAsync("users");
 
@@ -41,6 +29,30 @@ public class AccountService : IAccountService
             return new List<UserDTO>();
         }
 
-        throw new Exception($"Failed to fetch users. Status code: {response.StatusCode}");
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            return new List<UserDTO>(); //ENDS IN HERE.
+        }
+
+        return new List<UserDTO>();
+        //throw new Exception($"Failed to fetch users. Status code: {response.StatusCode}");
+    }
+
+    public async Task<UserResult> SignInWithGoogle()
+    {
+        var result = await _httpClient.GetFromJsonAsync<UserResult>("user/auth");
+
+        if (result is not null && result.Success)
+        {
+            return result;
+        }
+
+        return new UserResult
+        {
+            Success = false,
+            Message = "No user returned from API",
+            authToken = string.Empty,
+            Id = Guid.Empty,
+        };
     }
 }

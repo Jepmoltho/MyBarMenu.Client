@@ -1,6 +1,18 @@
-﻿<div>
+﻿@using MyBarMenu.Client.Services.Interfaces;
+@using Blazored.LocalStorage;
+@inject IAccountService _accountService;
+@inject ILocalStorageService _localStorageService;
+@inject NavigationManager _navigationManager;
+@rendermode InteractiveServer
+
+
+@* @inject  *@
+
+<div>
     <h3>Signin</h3>
-    <a href=@($"{backendUrl}auth/SignInWithGoogle")>
+
+    @* <button @onclick="HandleLogin">Sign in with Google</button> *@
+     <a href=@($"{backendUrl}auth/SignInWithGoogle")>
         Sign in with Google
     </a>
     <br />
@@ -12,5 +24,25 @@
 </div>
 
 @code {
+
     string backendUrl = Environment.GetEnvironmentVariable("BACKEND_URL") ?? throw new InvalidOperationException("Backend url not set");
+
+    // public async Task HandleLogin()
+    // {
+    //     try
+    //     {
+    //         var result = await _accountService.SignInWithGoogle();
+
+    //         if (result is not null && result.Success)
+    //         {
+    //             await _localStorageService.SetItemAsync("authToken", result.authToken);
+    //             //_navigationManager.NavigateTo("/login-success");
+    //         }
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Console.WriteLine($"Login error: {ex.Message}");
+
+    //     }
+    // }
 }

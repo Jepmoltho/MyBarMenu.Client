@@ -42,5 +42,23 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         }
 
         return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
-    } 
+    }
+
+    //public async Task<UserResult> SignInWithGoogle()
+    //{
+    //    var result = await _httpClient.GetFromJsonAsync<UserResult>("user/auth");
+
+    //    if (result is not null && result.Success)
+    //    {
+    //        return result;
+    //    }
+
+    //    return new UserResult
+    //    {
+    //        Success = false,
+    //        Message = "No user returned from API",
+    //        authToken = string.Empty,
+    //        Id = Guid.Empty,
+    //    };
+    //}
 }

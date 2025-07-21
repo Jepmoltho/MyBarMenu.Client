@@ -3,6 +3,7 @@ using MyBarMenu.Client.Services;
 using MyBarMenu.Client.Services.Interfaces;
 using DotNetEnv;
 using Microsoft.AspNetCore.Components.Authorization;
+using Blazored.LocalStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,8 @@ builder.Services.AddAuthorizationCore();
 //    options.AccessDeniedPath = "/login";
 //});
 builder.Services.AddAuthorization();
+
+builder.Services.AddBlazoredLocalStorage();
                    
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 

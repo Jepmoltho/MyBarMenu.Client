@@ -5,4 +5,6 @@ namespace MyBarMenu.Client.Services.Interfaces;
 public interface IAccountService
 {
     Task<IEnumerable<UserDTO>> GetUsers();
+    Task<UserResult> SignInWithGoogle();
+
 }

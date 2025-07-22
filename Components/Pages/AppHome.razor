@@ -1,7 +1,4 @@
-﻿@* @page "/app"
-@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.Authorization *@
-@page "/app"
+﻿@page "/app"
 @using MyBarMenu.Client.Services
 @inject CustomAuthStateProvider _customAuthStateProvider
 @inject NavigationManager Navigation
@@ -15,7 +12,7 @@
 }
 else if (isAuthenticated)
 {
-    <h3>Welcome back, user! 🎉</h3>
+    <h3>Welcome back, @UserName! 🎉</h3>
 }
 else
 {
@@ -28,6 +25,9 @@ else
     private bool isLoading = true;
     private bool hasRun = false;
 
+    [Parameter]
+    public string UserName { get; set; } = string.Empty;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!hasRun)
@@ -37,7 +37,8 @@ else
             var authState = await _customAuthStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
 
-            isAuthenticated = user.Identity?.IsAuthenticated ?? false;
+            isAuthenticated = user?.Identity?.IsAuthenticated ?? false;
+            UserName = user?.Identity?.Name ?? "anonymous";
 
             isLoading = false;
 

@@ -1,10 +1,10 @@
-﻿using MyBarMenu.Client.DTOs;
+﻿//using MyBarMenu.Client.DTOs;
 
-namespace MyBarMenu.Client.Services.Interfaces;
+//namespace MyBarMenu.Client.Services.Interfaces;
 
-public interface IAccountService
-{
-    Task<IEnumerable<UserDTO>> GetUsers(string token);
-    //Task<UserResult> SignInWithGoogle();
+//public interface IAccountService
+//{
+//    Task<IEnumerable<UserDTO>> GetUsers(string token);
+//    //Task<UserResult> SignInWithGoogle();
 
-}
+//}

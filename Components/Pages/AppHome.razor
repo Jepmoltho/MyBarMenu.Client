@@ -1,5 +1,6 @@
 ﻿@page "/app"
 @using MyBarMenu.Client.Services
+@using MyBarMenu.Client.Components.Components
 @inject CustomAuthStateProvider _customAuthStateProvider
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
@@ -13,6 +14,7 @@
 else if (isAuthenticated)
 {
     <h3>Welcome back, @UserName! 🎉</h3>
+    <Users></Users>
 }
 else
 {

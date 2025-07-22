@@ -1,48 +1,29 @@
 ﻿@using MyBarMenu.Client.Services.Interfaces;
 @using Blazored.LocalStorage;
-@inject IAccountService _accountService;
+<!-- inject IAccountService _accountService; -->
+@inject IAuthService _authService;
 @inject ILocalStorageService _localStorageService;
 @inject NavigationManager _navigationManager;
 @rendermode InteractiveServer
 
-
-@* @inject  *@
-
 <div>
     <h3>Signin</h3>
-
-    @* <button @onclick="HandleLogin">Sign in with Google</button> *@
      <a href=@($"{backendUrl}auth/SignInWithGoogle")>
         Sign in with Google
     </a>
     <br />
     <br />
     <br />
-    <form method="post" action="@($"{backendUrl}auth/SignOut")">
-        <button type="submit">Sign out</button>
-    </form>
+    <button @onclick="HandleLogout">Sign out</button>
 </div>
 
 @code {
 
     string backendUrl = Environment.GetEnvironmentVariable("BACKEND_URL") ?? throw new InvalidOperationException("Backend url not set");
 
-    // public async Task HandleLogin()
-    // {
-    //     try
-    //     {
-    //         var result = await _accountService.SignInWithGoogle();
-
-    //         if (result is not null && result.Success)
-    //         {
-    //             await _localStorageService.SetItemAsync("authToken", result.authToken);
-    //             //_navigationManager.NavigateTo("/login-success");
-    //         }
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Console.WriteLine($"Login error: {ex.Message}");
-
-    //     }
-    // }
+    private async Task HandleLogout()
+    {
+        await _authService.LogoutAsync(); // Clear local storage & auth state
+        _navigationManager.NavigateTo("/login"); // Redirect to login page or landing page
+    }
 }

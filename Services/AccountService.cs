@@ -39,7 +39,8 @@ public class AccountService : IAccountService
 
         if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
         {
-            return new List<UserDTO>(); //ENDS IN HERE.
+            throw new UnauthorizedAccessException();
+            //return new List<UserDTO>(); //ENDS IN HERE.
         }
 
         if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -51,21 +52,21 @@ public class AccountService : IAccountService
         //throw new Exception($"Failed to fetch users. Status code: {response.StatusCode}");
     }
 
-    public async Task<UserResult> SignInWithGoogle()
-    {
-        var result = await _httpClient.GetFromJsonAsync<UserResult>("user/auth");
+    //public async Task<UserResult> SignInWithGoogle()
+    //{
+    //    var result = await _httpClient.GetFromJsonAsync<UserResult>("user/auth");
 
-        if (result is not null && result.Success)
-        {
-            return result;
-        }
+    //    if (result is not null && result.Success)
+    //    {
+    //        return result;
+    //    }
 
-        return new UserResult
-        {
-            Success = false,
-            Message = "No user returned from API",
-            authToken = string.Empty,
-            Id = Guid.Empty,
-        };
-    }
+    //    return new UserResult
+    //    {
+    //        Success = false,
+    //        Message = "No user returned from API",
+    //        authToken = string.Empty,
+    //        Id = Guid.Empty,
+    //    };
+    //}
 }

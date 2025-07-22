@@ -1,6 +1,7 @@
 ﻿@page "/login-success"
+@using MyBarMenu.Client.Services.Interfaces
 @inject NavigationManager Navigation
-@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
+@inject IAuthService _authService
 @rendermode InteractiveServer
 
 
@@ -18,7 +19,9 @@
             var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
             if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var token))
             {
-                await LocalStorage.SetItemAsync("authToken", token.ToString());
+                await _authService.LoginAsync(token);
+
+                //await LocalStorage.SetItemAsync("authToken", token.ToString());
 
                 // Redirect after saving token
                 //Navigation.NavigateTo("/app");

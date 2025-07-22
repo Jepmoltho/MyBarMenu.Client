@@ -25,17 +25,13 @@ builder.Services.AddHttpClient<IAccountService, AccountService>(client =>
 
 
 builder.Services.AddAuthorizationCore();
-//builder.Services.AddAuthentication("Cookies").AddCookie("Cookies", options => 
-//{
-//    options.LoginPath = "/app";
-//    options.LogoutPath = "/";
-//    options.AccessDeniedPath = "/login";
-//});
 builder.Services.AddAuthorization();
 
 builder.Services.AddBlazoredLocalStorage();
                    
-builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddScoped<CustomAuthStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthStateProvider>());
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 

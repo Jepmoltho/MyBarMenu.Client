@@ -1,21 +1,52 @@
-﻿@page "/app"
+﻿@* @page "/app"
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.Authorization
-<!-- attribute [Authorize] -->
+@using Microsoft.AspNetCore.Components.Authorization *@
+@page "/app"
+@using MyBarMenu.Client.Services
+@inject CustomAuthStateProvider _customAuthStateProvider
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
 
-<!-- This site can only be seen if logged in -->
-<CascadingAuthenticationState>
-    <AuthorizeView>
-        <Authorized>
-            <h3>AppHome</h3>
-        </Authorized>
-        <NotAuthorized>
-            <h3>No app home</h3>
-            @* <RedirectToLogin /> *@
-        </NotAuthorized>
-    </AuthorizeView>
-</CascadingAuthenticationState>
+<h3>App Home</h3>
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+}
+else if (isAuthenticated)
+{
+    <h3>Welcome back, user! 🎉</h3>
+}
+else
+{
+    <h3>You are not authorized to view this page.</h3>
+    <p>Redirecting to login...</p>
+}
 
 @code {
+    private bool isAuthenticated;
+    private bool isLoading = true;
+    private bool hasRun = false;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!hasRun)
+        {
+            hasRun = true;
+
+            var authState = await _customAuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            isAuthenticated = user.Identity?.IsAuthenticated ?? false;
+
+            isLoading = false;
+
+            StateHasChanged(); // re-render UI
+
+            // if (!isAuthenticated)
+            // {
+            //     Navigation.NavigateTo("/login", forceLoad: true);
+            // }
+        }
+    }
 }

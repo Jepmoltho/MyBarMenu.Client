@@ -21,14 +21,11 @@
             {
                 await _authService.LoginAsync(token);
 
-                //await LocalStorage.SetItemAsync("authToken", token.ToString());
-
-                // Redirect after saving token
-                //Navigation.NavigateTo("/app");
+                Navigation.NavigateTo("/app", forceLoad: true);
             }
             else
             {
-                //Navigation.NavigateTo("/login");
+                Navigation.NavigateTo("/login");
             }
         }
     }

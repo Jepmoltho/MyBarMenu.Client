@@ -25,6 +25,7 @@
     private async Task HandleLogout()
     {
         await _authService.LogoutAsync();
-        StateHasChanged();
+        _navigationManager.NavigateTo("/");
+        // StateHasChanged();
     }
 }

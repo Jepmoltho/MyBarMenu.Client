@@ -1,11 +1,11 @@
 ﻿@page "/app"
+@using Microsoft.AspNetCore.Authorization
 @using MyBarMenu.Client.Services
 @using MyBarMenu.Client.Components.Components
+@using Microsoft.AspNetCore.Components.Authorization;
 @inject CustomAuthStateProvider _customAuthStateProvider
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
-
-<h3>App Home</h3>
 
 @if (isLoading)
 {
@@ -15,6 +15,7 @@ else if (isAuthenticated)
 {
     <h3>Welcome back, @UserName! 🎉</h3>
     <Users></Users>
+    <!-- List of protected components in the app -->
 }
 else
 {
@@ -44,12 +45,14 @@ else
 
             isLoading = false;
 
-            StateHasChanged(); // re-render UI
+            StateHasChanged(); 
 
-            // if (!isAuthenticated)
-            // {
-            //     Navigation.NavigateTo("/login", forceLoad: true);
-            // }
+            if (!isAuthenticated)
+            {
+                // Set a timeout so the user sees they are redirected to login for three seconds before it happens
+                await Task.Delay(2000);
+                Navigation.NavigateTo("/login", forceLoad: true);
+            }
         }
     }
 }

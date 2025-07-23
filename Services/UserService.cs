@@ -18,6 +18,10 @@ public class UserService : IUserService
 
     public async Task<List<UserDTO>> GetUsers()
     {
+        //You got to here: Sending the auth token in the header is an additional layer of authorisation that authorises calls to endpoints with the [Authorize] tag. 
+        //You need to set it once for all http clients (as well as baseadress but this happens when building the application the first time)
+        //when logging in and remove the bearer token for all when logged out and notify the changes to the application. So that below code does not have to be
+        //replicated by each call.
         var authToken = await _localStorageService.GetItemAsync<string>("authToken");
         var request = new HttpRequestMessage(HttpMethod.Get, "users");
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authToken);

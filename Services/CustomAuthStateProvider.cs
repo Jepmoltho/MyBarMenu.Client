@@ -17,7 +17,7 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         _localStorageService = localStorageService;
     }
 
-    //Called on pages with an [Authorize]
+    //Used to authorize access to pages. Must be called first thing in @code block and evaluate the authenticated state to conditionally render restricted content or redirect user back to login
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var authToken = await _localStorageService.GetItemAsync<string>("authToken");

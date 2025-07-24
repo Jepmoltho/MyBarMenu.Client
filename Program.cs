@@ -23,7 +23,11 @@ builder.Services.AddAuthorization();
 builder.Services.AddBlazoredLocalStorage();
 //builder.Services.AddScoped<AuthTokenHandler>();
 
-builder.Services.AddHttpClient<AuthTokenHandler>();
+builder.Services.AddHttpClient<AuthTokenHandler>(sp =>
+{
+    sp.BaseAddress = new Uri(baseUrl);
+});
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<CustomAuthStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthStateProvider>());

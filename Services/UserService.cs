@@ -19,13 +19,7 @@ public class UserService : IUserService
 
     public async Task<List<UserDTO>> GetUsers()
     {
-        //var authToken = _httpContextAccessor.HttpContext?.Session.GetString("authToken");
-        //var request = new HttpRequestMessage(HttpMethod.Get, "users");
-        //request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authToken);
-
-        //var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "users"));
-
-        var response = await _authTokenHandler.SendAsync("users", _localStorageService, CancellationToken.None);
+        var response = await _authTokenHandler.SendAsync("/users", _localStorageService, CancellationToken.None);
 
         if (response.IsSuccessStatusCode)
         {

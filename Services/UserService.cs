@@ -15,7 +15,6 @@ public class UserService : IUserService
     public UserService(HttpClient httpClient, ILocalStorageService localStorageService, IHttpContextAccessor httpContextAccessor, AuthTokenHandler authTokenHandler)
     {
         _httpClient = httpClient;
-        _httpClient.BaseAddress = new Uri("https://localhost:7201/");
         _localStorageService = localStorageService;
         _httpContextAccessor = httpContextAccessor;
         _authTokenHandler = authTokenHandler;
@@ -28,9 +27,8 @@ public class UserService : IUserService
         //request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authToken);
 
         //var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "users"));
-        var request = new HttpRequestMessage(HttpMethod.Get, "users");
 
-        var response = await _authTokenHandler.SendAsync(_httpClient, request, _localStorageService, CancellationToken.None);
+        var response = await _authTokenHandler.SendAsync(_httpClient, "users", _localStorageService, CancellationToken.None);
 
         if (response.IsSuccessStatusCode)
         {

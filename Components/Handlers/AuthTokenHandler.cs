@@ -5,25 +5,26 @@ using Blazored.LocalStorage;
 
 namespace MyBarMenu.Client.Components.Handlers
 {
-    public class AuthTokenHandler /*: DelegatingHandler*/
+    public class AuthTokenHandler
     {
-        //private readonly ILocalStorageService _localStorageService;
-
-        public AuthTokenHandler(/*ILocalStorageService localStorageService*/)
+        private readonly HttpClient _httpClient;
+        public AuthTokenHandler(HttpClient httpClient)
         {
-            //_localStorageService = localStorageService;
+            _httpClient = httpClient;
+            _httpClient.BaseAddress = new Uri("https://localhost:7201/");
         }
 
-        public async Task<HttpResponseMessage> SendAsync(HttpClient httpClient, HttpRequestMessage request, ILocalStorageService _localStorageService, CancellationToken cancellationToken)
+        public async Task<HttpResponseMessage> SendAsync(HttpClient httpClient, string path, ILocalStorageService _localStorageService, CancellationToken cancellationToken)
         {
+            var request = new HttpRequestMessage(HttpMethod.Get, path);
+
             var authToken = await _localStorageService.GetItemAsync<string>("authToken");
             if (!string.IsNullOrWhiteSpace(authToken))
             {
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authToken);
             }
 
-            return await httpClient.SendAsync(request, cancellationToken);
-            //return await base.SendAsync(request, cancellationToken);
+            return await _httpClient.SendAsync(request, cancellationToken);
         }
     }
 }

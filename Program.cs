@@ -48,7 +48,7 @@ builder.Services.AddScoped<AuthTokenHandler>();
 builder.Services.AddHttpClient<IUserService, UserService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7201");
-}).AddHttpMessageHandler<AuthTokenHandler>();
+}); //.AddHttpMessageHandler<AuthTokenHandler>();
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<CustomAuthStateProvider>();

@@ -1,6 +1,7 @@
 ﻿using MyBarMenu.Client.DTOs;
 using MyBarMenu.Client.Services.Interfaces;
 using Blazored.LocalStorage;
+using MyBarMenu.Client.Components.Handlers;
 
 namespace MyBarMenu.Client.Services;
 
@@ -9,13 +10,15 @@ public class UserService : IUserService
     private readonly HttpClient _httpClient;
     private readonly ILocalStorageService _localStorageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly AuthTokenHandler _authTokenHandler;
 
-    public UserService(HttpClient httpClient, ILocalStorageService localStorageService, IHttpContextAccessor httpContextAccessor)
+    public UserService(HttpClient httpClient, ILocalStorageService localStorageService, IHttpContextAccessor httpContextAccessor, AuthTokenHandler authTokenHandler)
     {
         _httpClient = httpClient;
         _httpClient.BaseAddress = new Uri("https://localhost:7201/");
         _localStorageService = localStorageService;
         _httpContextAccessor = httpContextAccessor;
+        _authTokenHandler = authTokenHandler;
     }
 
     public async Task<List<UserDTO>> GetUsers()
@@ -24,7 +27,10 @@ public class UserService : IUserService
         //var request = new HttpRequestMessage(HttpMethod.Get, "users");
         //request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authToken);
 
-        var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "users"));
+        //var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "users"));
+        var request = new HttpRequestMessage(HttpMethod.Get, "users");
+
+        var response = await _authTokenHandler.SendAsync(_httpClient, request, _localStorageService, CancellationToken.None);
 
         if (response.IsSuccessStatusCode)
         {

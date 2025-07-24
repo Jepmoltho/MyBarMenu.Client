@@ -5,23 +5,25 @@ using Blazored.LocalStorage;
 
 namespace MyBarMenu.Client.Components.Handlers
 {
-    public class AuthTokenHandler : DelegatingHandler
+    public class AuthTokenHandler /*: DelegatingHandler*/
     {
-        private readonly ILocalStorageService _localStorageService;
+        //private readonly ILocalStorageService _localStorageService;
 
-        public AuthTokenHandler(ILocalStorageService localStorageService)
+        public AuthTokenHandler(/*ILocalStorageService localStorageService*/)
         {
-            _localStorageService = localStorageService;
+            //_localStorageService = localStorageService;
         }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public async Task<HttpResponseMessage> SendAsync(HttpClient httpClient, HttpRequestMessage request, ILocalStorageService _localStorageService, CancellationToken cancellationToken)
         {
             var authToken = await _localStorageService.GetItemAsync<string>("authToken");
             if (!string.IsNullOrWhiteSpace(authToken))
             {
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authToken);
             }
-            return await base.SendAsync(request, cancellationToken);
+
+            return await httpClient.SendAsync(request, cancellationToken);
+            //return await base.SendAsync(request, cancellationToken);
         }
     }
 }

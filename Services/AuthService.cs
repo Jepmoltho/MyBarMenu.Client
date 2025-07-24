@@ -27,11 +27,11 @@ public class AuthService : IAuthService
         await _localStorage.SetItemAsync("authToken", authToken);
 
         // Set session value only if session is available and not yet started
-        var httpContext = _httpContextAccessor.HttpContext;
-        if (httpContext != null && httpContext.Session != null && !httpContext.Response.HasStarted)
-        {
-            httpContext.Session.SetString("authToken", authToken);
-        }
+        //var httpContext = _httpContextAccessor.HttpContext;
+        //if (httpContext != null && httpContext.Session != null && !httpContext.Response.HasStarted)
+        //{
+        //    httpContext.Session.SetString("authToken", authToken);
+        //}
 
         _authStateProvider.NotifyUserAuthentification(authToken);
     }

@@ -16,25 +16,12 @@ var baseUrl = Environment.GetEnvironmentVariable("BACKEND_URL") ?? throw new Inv
 builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-// Registers AccountService as a scoped service. Each time it's injected, a new instance is created with its own HttpClient. The HttpClient is managed by IHttpClientFactory and scoped to the AccountService instance.
-
-//register my AuthTokenHandler
-
-builder.Services.AddHttpContextAccessor();
-// Add this before builder.Build() to enable session support
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
 
 builder.Services.AddAuthorizationCore();
 builder.Services.AddAuthorization();
 
 builder.Services.AddBlazoredLocalStorage();
-builder.Services.AddScoped<AuthTokenHandler>();
+//builder.Services.AddScoped<AuthTokenHandler>();
 
 builder.Services.AddHttpClient<AuthTokenHandler>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -48,7 +35,6 @@ builder.Services.AddServerSideBlazor().AddCircuitOptions(options => {
 
 
 var app = builder.Build();
-app.UseSession(); // Add this after app.UseHttpsRedirection()
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

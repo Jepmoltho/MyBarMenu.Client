@@ -2,16 +2,14 @@
 using System.Security.Claims;
 using Blazored.LocalStorage;
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text.Json;
-using Blazored.LocalStorage;
-using Microsoft.AspNetCore.Components.Authorization;
-
 namespace MyBarMenu.Client.Services;
 
 public class CustomAuthStateProvider : AuthenticationStateProvider
 {
     private readonly ILocalStorageService _localStorageService;
+
+    private string AuthToken { get; set; } = string.Empty;
+
     public CustomAuthStateProvider(ILocalStorageService localStorageService)
     {
         _localStorageService = localStorageService;
@@ -54,5 +52,16 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         var token = handler.ReadJwtToken(authToken);
 
         return token.Claims;
+    }
+
+    public void SetAuthToken(string authToken)
+    {
+        AuthToken = authToken;
+        NotifyUserAuthentification(authToken);
+    }
+
+    public string GetAuthToken()
+    {
+        return AuthToken;
     }
 }

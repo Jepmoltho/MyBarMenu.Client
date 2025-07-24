@@ -4,6 +4,7 @@ using MyBarMenu.Client.Services.Interfaces;
 using DotNetEnv;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
+using MyBarMenu.Client.Components.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,19 +18,43 @@ builder.Services.AddRazorComponents()
 
 // Registers AccountService as a scoped service. Each time it's injected, a new instance is created with its own HttpClient. The HttpClient is managed by IHttpClientFactory and scoped to the AccountService instance.
 
+//register my AuthTokenHandler
+
+builder.Services.AddHttpContextAccessor();
+// Add this before builder.Build() to enable session support
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// ... existing code ...
+
+//var app = builder.Build();
+
+//// ... existing code ...
+
+//app.UseSession(); // Add this after app.UseHttpsRedirection()
+
+// ... existing code ...
 builder.Services.AddAuthorizationCore();
 builder.Services.AddAuthorization();
 
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddScoped<AuthTokenHandler>();
 
 builder.Services.AddHttpClient<IUserService, UserService>(client =>
 {
     client.BaseAddress = new Uri("https://localhost:7201");
-});
+}).AddHttpMessageHandler<AuthTokenHandler>();
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<CustomAuthStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthStateProvider>());
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserService, UserService>();
+//builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddServerSideBlazor().AddCircuitOptions(options => {
     options.DetailedErrors = true;
@@ -37,6 +62,7 @@ builder.Services.AddServerSideBlazor().AddCircuitOptions(options => {
 
 
 var app = builder.Build();
+app.UseSession(); // Add this after app.UseHttpsRedirection()
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

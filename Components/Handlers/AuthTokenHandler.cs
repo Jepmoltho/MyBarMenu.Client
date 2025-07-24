@@ -11,7 +11,6 @@ namespace MyBarMenu.Client.Components.Handlers
         public AuthTokenHandler(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            //_httpClient.BaseAddress = new Uri("https://localhost:7201/");
         }
 
         public async Task<HttpResponseMessage> SendAsync(string path, ILocalStorageService _localStorageService, CancellationToken cancellationToken)

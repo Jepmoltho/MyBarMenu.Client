@@ -1,0 +1,36 @@
+﻿@using MyBarMenu.Client.Services.Interfaces
+@using Blazored.LocalStorage
+@using MyBarMenu.Client.Services;
+@inject IUserService _userService
+@inject ILocalStorageService _localStorageService
+@rendermode InteractiveServer
+
+<div class="users">
+    <ul>
+        @foreach (var username in UserNames)
+        {
+            <li>@username</li>
+        }
+    </ul>
+</div>
+
+@code{
+
+    [Parameter]
+    public List<string> UserNames { get; set; } = new List<string>();
+
+    private bool _initialized = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!_initialized && firstRender)
+        {
+            _initialized = true;
+
+            var users = await _userService.GetUsers();
+            UserNames = users.Select(u => u.UserName).ToList();
+
+            StateHasChanged(); // Needed because we updated data after initial render
+        }
+    }
+}

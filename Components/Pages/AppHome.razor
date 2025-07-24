@@ -1,0 +1,58 @@
+﻿@page "/app"
+@using Microsoft.AspNetCore.Authorization
+@using MyBarMenu.Client.Services
+@using MyBarMenu.Client.Components.Components
+@using Microsoft.AspNetCore.Components.Authorization;
+@inject CustomAuthStateProvider _customAuthStateProvider
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+@if (isLoading)
+{
+    <p>Loading...</p>
+}
+else if (isAuthenticated)
+{
+    <h3>Welcome back, @UserName! 🎉</h3>
+    <Users></Users>
+    <!-- List of protected components in the app -->
+}
+else
+{
+    <h3>You are not authorized to view this page.</h3>
+    <p>Redirecting to login...</p>
+}
+
+@code {
+    private bool isAuthenticated;
+    private bool isLoading = true;
+    private bool hasRun = false;
+
+    [Parameter]
+    public string UserName { get; set; } = string.Empty;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!hasRun)
+        {
+            hasRun = true;
+
+            var authState = await _customAuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            isAuthenticated = user?.Identity?.IsAuthenticated ?? false;
+            UserName = user?.Identity?.Name ?? "anonymous";
+
+            isLoading = false;
+
+            StateHasChanged(); 
+
+            if (!isAuthenticated)
+            {
+                // Set a timeout so the user sees they are redirected to login for three seconds before it happens
+                await Task.Delay(2000);
+                Navigation.NavigateTo("/login", forceLoad: true);
+            }
+        }
+    }
+}

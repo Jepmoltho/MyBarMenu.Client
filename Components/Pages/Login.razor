@@ -1,0 +1,31 @@
+﻿@page "/login"
+@using MyBarMenu.Client.Components.Layout
+@using MyBarMenu.Client.Services.Interfaces;
+@using Blazored.LocalStorage;
+@inject IAuthService _authService;
+@inject ILocalStorageService _localStorageService;
+@inject NavigationManager _navigationManager;
+@rendermode InteractiveServer
+
+<div>
+    <h3>Signin</h3>
+    <a href=@($"{backendUrl}auth/SignInWithGoogle")>
+        Sign in with Google
+    </a>
+    <br />
+    <br />
+    <br />
+    <button @onclick="HandleLogout">Sign out</button>
+</div>
+
+@code {
+
+    string backendUrl = Environment.GetEnvironmentVariable("BACKEND_URL") ?? throw new InvalidOperationException("Backend url not set");
+
+    private async Task HandleLogout()
+    {
+        await _authService.LogoutAsync();
+        _navigationManager.NavigateTo("/");
+        // StateHasChanged();
+    }
+}

@@ -7,16 +7,13 @@ namespace MyBarMenu.Client.Services;
 
 public class UserService : IUserService
 {
-    private readonly HttpClient _httpClient;
+
     private readonly ILocalStorageService _localStorageService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly AuthTokenHandler _authTokenHandler;
 
-    public UserService(HttpClient httpClient, ILocalStorageService localStorageService, IHttpContextAccessor httpContextAccessor, AuthTokenHandler authTokenHandler)
+    public UserService(ILocalStorageService localStorageService, AuthTokenHandler authTokenHandler)
     {
-        _httpClient = httpClient;
         _localStorageService = localStorageService;
-        _httpContextAccessor = httpContextAccessor;
         _authTokenHandler = authTokenHandler;
     }
 
@@ -28,7 +25,7 @@ public class UserService : IUserService
 
         //var response = await _httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Get, "users"));
 
-        var response = await _authTokenHandler.SendAsync(_httpClient, "users", _localStorageService, CancellationToken.None);
+        var response = await _authTokenHandler.SendAsync("users", _localStorageService, CancellationToken.None);
 
         if (response.IsSuccessStatusCode)
         {

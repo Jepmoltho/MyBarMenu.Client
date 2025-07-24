@@ -14,7 +14,7 @@ namespace MyBarMenu.Client.Components.Handlers
             _httpClient.BaseAddress = new Uri("https://localhost:7201/");
         }
 
-        public async Task<HttpResponseMessage> SendAsync(HttpClient httpClient, string path, ILocalStorageService _localStorageService, CancellationToken cancellationToken)
+        public async Task<HttpResponseMessage> SendAsync(string path, ILocalStorageService _localStorageService, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, path);
 

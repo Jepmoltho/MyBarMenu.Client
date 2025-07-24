@@ -30,31 +30,17 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// ... existing code ...
-
-//var app = builder.Build();
-
-//// ... existing code ...
-
-//app.UseSession(); // Add this after app.UseHttpsRedirection()
-
-// ... existing code ...
 builder.Services.AddAuthorizationCore();
 builder.Services.AddAuthorization();
 
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddScoped<AuthTokenHandler>();
 
-builder.Services.AddHttpClient<IUserService, UserService>(client =>
-{
-    client.BaseAddress = new Uri("https://localhost:7201");
-}); //.AddHttpMessageHandler<AuthTokenHandler>();
-builder.Services.AddHttpClient<IUserService, UserService>();
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddHttpClient<AuthTokenHandler>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<CustomAuthStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthStateProvider>());
 builder.Services.AddScoped<IAuthService, AuthService>();
-//builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddServerSideBlazor().AddCircuitOptions(options => {
     options.DetailedErrors = true;

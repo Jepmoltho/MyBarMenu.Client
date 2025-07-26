@@ -1,7 +1,7 @@
 ﻿using MyBarMenu.Client.DTOs;
 using MyBarMenu.Client.Services.Interfaces;
 using Blazored.LocalStorage;
-using MyBarMenu.Client.Components.Handlers;
+using MyBarMenu.Client.Handlers;
 
 namespace MyBarMenu.Client.Services;
 

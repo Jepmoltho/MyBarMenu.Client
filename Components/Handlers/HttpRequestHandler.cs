@@ -7,11 +7,11 @@ namespace MyBarMenu.Client.Components.Handlers;
 
 // You got to here: Rewrite to a http requesthandler which all http requests must go through so that the authToken is attatched to the request. 
 // Figure out how it makes sense to distinquish between authorised endpoint request maybe with two different methods or handlers
-// Note that ILocalStorageService must be passed as a param as the server side application otherwise would not have access to browser
 public class HttpRequestHandler
 {
     private readonly HttpClient _httpClient;
     private readonly ILocalStorageService _localStorageService;
+
     public HttpRequestHandler(HttpClient httpClient, ILocalStorageService localStorageService)
     {
         _httpClient = httpClient;

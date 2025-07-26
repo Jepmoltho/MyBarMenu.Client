@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Components\Handlers\**" />
+    <Content Remove="Components\Handlers\**" />
+    <EmbeddedResource Remove="Components\Handlers\**" />
+    <None Remove="Components\Handlers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="todo.cs" />
   </ItemGroup>
 
@@ -15,10 +22,6 @@
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.7" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.13.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Components\Handlers\" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,9 @@
 ﻿@page "/app"
 @using Microsoft.AspNetCore.Authorization
-@using MyBarMenu.Client.Services
-@using MyBarMenu.Client.Components.Components
 @using Microsoft.AspNetCore.Components.Authorization;
+@using MyBarMenu.Client.Components.Components
+@using MyBarMenu.Client.Providers
+@using MyBarMenu.Client.Services
 @inject CustomAuthStateProvider _customAuthStateProvider
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
@@ -49,7 +50,7 @@ else
 
             if (!isAuthenticated)
             {
-                // Set a timeout so the user sees they are redirected to login for three seconds before it happens
+                // Set a timeout so the user sees they are redirected to login for x seconds before it happens
                 await Task.Delay(2000);
                 Navigation.NavigateTo("/login", forceLoad: true);
             }

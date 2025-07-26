@@ -3,15 +3,17 @@ using System.Security.Claims;
 using Blazored.LocalStorage;
 using System.IdentityModel.Tokens.Jwt;
 using MyBarMenu.Client.Providers.Interfaces;
-namespace MyBarMenu.Client.Services;
+namespace MyBarMenu.Client.Providers;
 
 // <summary>
 // CustomAuthStateProvider is responsible for managing the authentication state of the user in a Blazor application.
-// It retrieves the authentication token from local storage, parses it to create a ClaimsPrincipal, and notifies the application of the user's authentication state.
-// GetAuthenticationStateAsync is the first wall of defence to be called pages that require authentication.
-// Not to be confused with the authTokenHandler that attaches jwt auth token to the header of http requests which is the second wall of defence.
+// It retrieves the authentication token from local storage, parses it to create a ClaimsPrincipal, and notifies the application of the user's
+// authentication state. GetAuthenticationStateAsync is the first wall of defence to be called pages that require authentication.
+// If a user is authenticated it will return a ClaimsPrincipal with the user's claims and cache the auth token in the ITokenProvider to be
+// retrived by the HttpRequestHandler for attaching the token to the header of http requests made on the page that is loaded. Hence authentication
+// happens both frontend on a page level with GetAuthenticationStateAsync and backend with the [Authorize] tag on restricted endpoints.
 // <summary>
-public class CustomAuthStateProvider : AuthenticationStateProvider
+public class CustomAuthStateProvider : AuthenticationStateProvider, ICustomAuthStateProvider
 {
     private readonly ILocalStorageService _localStorageService;
     private readonly ITokenProvider _tokenProvider;
@@ -23,20 +25,21 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
     }
 
     /// <summary>
-    /// Implementation of GetAuthenticationStateAsync method that retrieves the authentication state of the user.
-    /// Should be called in @code block of pages that require authentication.
-    /// Gets the authToken from local storage because that is persisted across page reloads and then caches it to ITokenProvider 
-    /// which is used by the HttpRequestHandler to attach the token to the header of individual http requests made on the page.
+    /// Implementation of GetAuthenticationStateAsync method that retrieves the authentication state of the user. 
+    /// Will return an anonymous user if no auth token is found in local storage represented by an empty ClaimsPrincipal.
+    /// Should be called in @code block of pages that require authentication. Gets the authToken from local storage because 
+    /// that is persisted across page reloads and then caches it to ITokenProvider which is used by the HttpRequestHandler 
+    /// to attach the token to the header of individual http requests made on the page that is loaded.
     /// </summary>
-    /// <returns></returns>
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var authToken = await _localStorageService.GetItemAsync<string>("authToken");
 
-        if (string.IsNullOrWhiteSpace(authToken)) 
+        if (string.IsNullOrWhiteSpace(authToken) || IsJwtTokenExpired(authToken)) 
         {
             _tokenProvider.ClearToken();
-            //Represents an unauthorised/anonymous user
+            await _localStorageService.RemoveItemAsync("authToken");
+
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
@@ -73,11 +76,20 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
         NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(anonymous)));
     }
 
-    private IEnumerable<Claim> ParseClaimsFromJwt(string authToken)
+    private static IEnumerable<Claim> ParseClaimsFromJwt(string authToken)
     {
         var handler = new JwtSecurityTokenHandler();
         var token = handler.ReadJwtToken(authToken);
 
         return token.Claims;
+    }
+
+    private static bool IsJwtTokenExpired(string authToken)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(authToken);
+
+        var expiry = jwtToken.ValidTo;
+        return expiry < DateTime.UtcNow;
     }
 }

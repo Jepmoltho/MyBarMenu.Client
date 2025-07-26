@@ -2,7 +2,6 @@
 @using Blazored.LocalStorage
 @using MyBarMenu.Client.Services;
 @inject IUserService _userService
-@inject ILocalStorageService _localStorageService
 @rendermode InteractiveServer
 
 <div class="users">
@@ -30,7 +29,7 @@
             var users = await _userService.GetUsers();
             UserNames = users.Select(u => u.UserName).ToList();
 
-            StateHasChanged(); // Needed because we updated data after initial render
+            StateHasChanged();
         }
     }
 }

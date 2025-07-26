@@ -6,6 +6,7 @@
 
 
 <h3>Logged in successfully 🎉</h3>
+<p>Redirecting to login...</p>
 
 @code {
     private bool _hasRun;
@@ -19,8 +20,16 @@
             var uri = Navigation.ToAbsoluteUri(Navigation.Uri);
             if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("token", out var token))
             {
+                //Got to here. Clear up null reference warnings
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    Navigation.NavigateTo("/login-failure");
+                    return;
+                }
+
                 await _authService.LoginAsync(token);
 
+                await Task.Delay(2000);
                 Navigation.NavigateTo("/app", forceLoad: true);
             }
             else

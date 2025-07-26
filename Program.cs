@@ -4,6 +4,7 @@ using MyBarMenu.Client.Services.Interfaces;
 using DotNetEnv;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
+using MyBarMenu.Client.Components.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,22 +15,18 @@ var baseUrl = Environment.GetEnvironmentVariable("BACKEND_URL") ?? throw new Inv
 // Add services to the container.
 builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
-
-// Registers AccountService as a scoped service. Each time it's injected, a new instance is created with its own HttpClient. The HttpClient is managed by IHttpClientFactory and scoped to the AccountService instance.
-
 builder.Services.AddAuthorizationCore();
 builder.Services.AddAuthorization();
-
 builder.Services.AddBlazoredLocalStorage();
 
-builder.Services.AddHttpClient<IUserService, UserService>(client =>
+builder.Services.AddHttpClient<HttpRequestHandler>(sp =>
 {
-    client.BaseAddress = new Uri("https://localhost:7201");
+    sp.BaseAddress = new Uri(baseUrl);
 });
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<CustomAuthStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthStateProvider>());
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddServerSideBlazor().AddCircuitOptions(options => {
     options.DetailedErrors = true;

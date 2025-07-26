@@ -7,19 +7,16 @@ namespace MyBarMenu.Client.Services;
 
 public class UserService : IUserService
 {
+    private readonly HttpRequestHandler _httpRequestHandler;
 
-    private readonly ILocalStorageService _localStorageService;
-    private readonly AuthTokenHandler _authTokenHandler;
-
-    public UserService(ILocalStorageService localStorageService, AuthTokenHandler authTokenHandler)
+    public UserService(HttpRequestHandler authTokenHandler)
     {
-        _localStorageService = localStorageService;
-        _authTokenHandler = authTokenHandler;
+        _httpRequestHandler = authTokenHandler;
     }
 
     public async Task<List<UserDTO>> GetUsers()
     {
-        var response = await _authTokenHandler.SendAsync("/users", _localStorageService, CancellationToken.None);
+        var response = await _httpRequestHandler.SendAsync("/users", CancellationToken.None);
 
         if (response.IsSuccessStatusCode)
         {

@@ -19,7 +19,7 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddAuthorization();
 builder.Services.AddBlazoredLocalStorage();
 
-builder.Services.AddHttpClient<AuthTokenHandler>(sp =>
+builder.Services.AddHttpClient<HttpRequestHandler>(sp =>
 {
     sp.BaseAddress = new Uri(baseUrl);
 });

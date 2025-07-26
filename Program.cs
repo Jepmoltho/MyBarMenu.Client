@@ -4,7 +4,9 @@ using MyBarMenu.Client.Services.Interfaces;
 using DotNetEnv;
 using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
-using MyBarMenu.Client.Components.Handlers;
+using MyBarMenu.Client.Handlers;
+using MyBarMenu.Client.Providers.Interfaces;
+using MyBarMenu.Client.Providers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +26,7 @@ builder.Services.AddHttpClient<HttpRequestHandler>(sp =>
     sp.BaseAddress = new Uri(baseUrl);
 });
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITokenProvider, TokenProvider>();
 builder.Services.AddScoped<CustomAuthStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(sp => sp.GetRequiredService<CustomAuthStateProvider>());
 builder.Services.AddScoped<IAuthService, AuthService>();

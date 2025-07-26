@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using Blazored.LocalStorage;
 using System.IdentityModel.Tokens.Jwt;
+using MyBarMenu.Client.Providers.Interfaces;
 namespace MyBarMenu.Client.Services;
 
 // <summary>
@@ -13,15 +14,19 @@ namespace MyBarMenu.Client.Services;
 public class CustomAuthStateProvider : AuthenticationStateProvider
 {
     private readonly ILocalStorageService _localStorageService;
+    private readonly ITokenProvider _tokenProvider;
 
-    public CustomAuthStateProvider(ILocalStorageService localStorageService)
+    public CustomAuthStateProvider(ILocalStorageService localStorageService, ITokenProvider tokenProvider)
     {
         _localStorageService = localStorageService;
+        _tokenProvider = tokenProvider;
     }
 
     /// <summary>
     /// Implementation of GetAuthenticationStateAsync method that retrieves the authentication state of the user.
     /// Should be called in @code block of pages that require authentication.
+    /// Gets the authToken from local storage because that is persisted across page reloads and then caches it to ITokenProvider 
+    /// which is used by the HttpRequestHandler to attach the token to the header of individual http requests made on the page.
     /// </summary>
     /// <returns></returns>
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -30,10 +35,12 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
 
         if (string.IsNullOrWhiteSpace(authToken)) 
         {
+            _tokenProvider.ClearToken();
             //Represents an unauthorised/anonymous user
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
+        _tokenProvider.SetToken(authToken);
         var identity = new ClaimsIdentity(ParseClaimsFromJwt(authToken), "jwt");
         var user = new ClaimsPrincipal(identity);
 
@@ -46,6 +53,7 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
     /// <param name="authToken"></param>
     public void NotifyUserAuthentification(string authToken)
     {
+        _tokenProvider.SetToken(authToken);
         var identity = new ClaimsIdentity(ParseClaimsFromJwt(authToken), "jwt");
         var user = new ClaimsPrincipal(identity);
 
@@ -60,6 +68,7 @@ public class CustomAuthStateProvider : AuthenticationStateProvider
     /// state change.</remarks>
     public void NotifyUserLogout()
     {
+        _tokenProvider.ClearToken();
         var anonymous = new ClaimsPrincipal(new ClaimsIdentity());
         NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(anonymous)));
     }
